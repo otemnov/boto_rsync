@@ -293,6 +293,10 @@ def main():
              'request/response output from httplib.'
         )
     parser.add_argument(
+        '-i', '--ignore-times' action='store_false', dest='ignore_times'
+        help='don\'t skip files that match size and time'
+        )
+    parser.add_argument(
         '--version', action='version',
         version=version % dict(prog=parser.prog, version=__version__)
         )
@@ -331,6 +335,7 @@ def main():
         debug = args.debug
         source = args.SOURCE
         dest = args.DESTINATION
+        ignore_times = args.ignore_times
     except:
         sys.stdout.write('\nERROR: Improperly formatted arguments.\n\n')
         usage(parser)
@@ -559,7 +564,7 @@ def main():
                                     fullpath[len(path):].lstrip(os.sep)
                                     )
                             continue
-                        elif keys[key_name] == file_size:
+                        elif not ignore_times and keys[key_name] == file_size:
                             if not quiet:
                                 sys.stdout.write(
                                     'Skipping %s (size matches)\n' %
